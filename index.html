@@ -43,7 +43,7 @@
         Notification.requestPermission().then((permission) => {
           if (permission === "granted") {
             navigator.serviceWorker
-              .register("/sw.js", {
+              .register("/Notification-//sw.js", {
                 type: "module",
               })
               .then((register) => {
@@ -77,6 +77,6 @@
       };
     </script>
 
-    <script src="send.js"></script>
+<!--     <script src="send.js"></script> -->
   </body>
 </html>
