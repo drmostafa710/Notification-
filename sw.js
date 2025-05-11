@@ -1,11 +1,11 @@
-// // Firebase Messaging Service Worker
+// Firebase Messaging Service Worker
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
-
 import {
   getMessaging,
   onBackgroundMessage,
 } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-messaging-sw.js";
 
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBqzGlq5Qukfk1WKzRCl9L8ndH2FnAct7k",
   authDomain: "qzapp-3db60.firebaseapp.com",
@@ -19,40 +19,69 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
-// Firebase Messaging Service Worker
+// Handle push from PHP backend payload
 self.addEventListener("push", (event) => {
   const payload = event.data.json();
-  console.log(payload.notification); // Debug the payload
-  const notif = payload.notification || payload; // Handle FCM structure
+  console.log("Push event received:", payload.notification.click_action);
 
-  event.waitUntil(
-    self.registration
-      .showNotification(notif.title, {
-        body: notif.body || "Default Body",
-      })
-      .catch((err) => {
-        console.error("Failed to show notification:", err);
-      })
-  );
+  // Structure per your PHP format
+  const title = payload.notification?.title || "No Title";
+  const body = payload.notification?.body || "No Body";
+  const icon = payload.notification?.image || "/default-icon.png";
+  const clickUrl = payload.notification.click_action;
+
+  const options = {
+    body: body,
+    icon: icon,
+    data: {
+      url: clickUrl,
+    },
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+  
+  self.addEventListener("notificationclick", (event) => {
+  
+    console.log(event)
+    
+    const urlToOpen = clickUrl || "https://google.com";
+    event.waitUntil(clients.openWindow(urlToOpen));
+    
+    event.notification.close();
+  });
 });
 
-self.addEventListener("notificationclick", (event) => {
-  event.waitUntil(clients.openWindow(event.notification.data.url));
-});
 
+// // Background message handler (via FCM when app is in background)
 onBackgroundMessage(messaging, (payload) => {
   console.log(
-    "[firebase-messaging-sw.js] Received background message ",
-    payload
+    "[firebase-messaging-sw.js] Received background message:",
+    payload.fcmOptions.link
   );
+
+
+  
   const notificationTitle = payload.notification?.title || "Default Title";
   const notificationOptions = {
     body: payload.notification?.body || "Default Body",
     icon: payload.notification?.image || "/default-icon.png",
-    data: { url: payload.data?.link || "https://example.com" },
-    tag: "my-tag",
+    data: {
+      url: payload.fcmOptions.link,
+    },
+    tag: "fcm-background",
   };
 
+  self.addEventListener("notificationclick", (event) => {
+  
+    console.log(event)
+    
+    const urlToOpen = payload.fcmOptions.link || "https://google.com";
+    event.waitUntil(clients.openWindow(urlToOpen));
+    
+    event.notification.close();
+  });
+  
+  
   return self.registration.showNotification(
     notificationTitle,
     notificationOptions
