@@ -52,38 +52,38 @@ self.addEventListener("push", (event) => {
 });
 
 
-// // Background message handler (via FCM when app is in background)
-onBackgroundMessage(messaging, (payload) => {
-  console.log(
-    "[firebase-messaging-sw.js] Received background message:",
-    payload.fcmOptions.link
-  );
+// // // Background message handler (via FCM when app is in background)
+// onBackgroundMessage(messaging, (payload) => {
+//   console.log(
+//     "[firebase-messaging-sw.js] Received background message:",
+//     payload.fcmOptions.link
+//   );
 
 
   
-  const notificationTitle = payload.notification?.title || "Default Title";
-  const notificationOptions = {
-    body: payload.notification?.body || "Default Body",
-    icon: payload.notification?.image || "/default-icon.png",
-    data: {
-      url: payload.fcmOptions.link,
-    },
-    tag: "fcm-background",
-  };
+//   const notificationTitle = payload.notification?.title || "Default Title";
+//   const notificationOptions = {
+//     body: payload.notification?.body || "Default Body",
+//     icon: payload.notification?.image || "/default-icon.png",
+//     data: {
+//       url: payload.fcmOptions.link,
+//     },
+//     tag: "fcm-background",
+//   };
 
-  self.addEventListener("notificationclick", (event) => {
+//   self.addEventListener("notificationclick", (event) => {
   
-    console.log(event)
+//     console.log(event)
     
-    const urlToOpen = payload.fcmOptions.link || "https://google.com";
-    event.waitUntil(clients.openWindow(urlToOpen));
+//     const urlToOpen = payload.fcmOptions.link || "https://google.com";
+//     event.waitUntil(clients.openWindow(urlToOpen));
     
-    event.notification.close();
-  });
+//     event.notification.close();
+//   });
   
   
-  return self.registration.showNotification(
-    notificationTitle,
-    notificationOptions
-  );
+//   return self.registration.showNotification(
+//     notificationTitle,
+//     notificationOptions
+//   );
 });
