@@ -33,7 +33,7 @@ send.onclick = () => {
   Notification.requestPermission().then((permission) => {
     if (permission === "granted") {
       navigator.serviceWorker
-        .register("/sw.js", {
+        .register("/Notification-/sw.js", {
           type: "module",
         })
         .then((register) => {
