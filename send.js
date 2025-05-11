@@ -33,7 +33,7 @@ send.onclick = () => {
   Notification.requestPermission().then((permission) => {
     if (permission === "granted") {
       navigator.serviceWorker
-        .register("/Notification-/sw.js", {
+        .register("/sw.js", {
           type: "module",
         })
         .then((register) => {
@@ -57,7 +57,9 @@ send.onclick = () => {
             });
         });
     } else {
-      console.log("Permission denied.");
+      const tokenElement = document.createElement("p");
+      tokenElement.textContent = "Permission denied.";
+      document.querySelector(".token").appendChild(tokenElement);
     }
   });
 };
