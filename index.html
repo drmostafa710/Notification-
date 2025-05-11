@@ -7,9 +7,9 @@
   </head>
 
   <body>
-    <div class="message"></div>
-
+    
     <button class="send">Send</button>
+    <div class="token"></div>
 
     <script type="module">
       // https://firebase.google.com/docs/web/setup#available-libraries
@@ -37,39 +37,46 @@
       const app = initializeApp(firebaseConfig);
       const messaging = getMessaging(app);
 
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          navigator.serviceWorker
-            .register("/Notification-/sw.js", { type: 'module' })
-            .then((register) => {
-              getToken(messaging, {
-                serviceWorkerRegistration: register,
-                vapidKey:
-                  "BBajxOpkkdCoOO8ezHTIUx6QIpu5sk3WbiUCNkio1l520waR5KEgYuHa01vyzDl0fbq3rIi3gy6fqt4QF5zbkSI",
+      let send = document.querySelector(".send");
+
+      send.onclick = () => {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            navigator.serviceWorker
+              .register("/sw.js", {
+                type: "module",
               })
-                .then((currentToken) => {
-                  if (currentToken) {
-                    console.log("Token:", currentToken);
-                    const tokenElement = document.createElement("p");
-                    tokenElement.textContent = currentToken;
-                    document.body.appendChild(tokenElement);
-                  } else {
-                    console.log("No token available.");
-                  }
+              .then((register) => {
+                getToken(messaging, {
+                  serviceWorkerRegistration: register,
+                  vapidKey:
+                    "BBajxOpkkdCoOO8ezHTIUx6QIpu5sk3WbiUCNkio1l520waR5KEgYuHa01vyzDl0fbq3rIi3gy6fqt4QF5zbkSI",
                 })
-                .catch((err) => {
-                  console.error(
-                    "Token retrieval failed:",
-                    err.code,
-                    err.message
-                  );
-                });
-            });
-        } else {
-          console.log("Permission denied.");
-        }
-      });
+                  .then((currentToken) => {
+                    if (currentToken) {
+                      console.log("Token:", currentToken);
+                      const tokenElement = document.createElement("p");
+                      tokenElement.textContent = currentToken;
+                      document.querySelector('.token').appendChild(tokenElement);
+                    } else {
+                      console.log("No token available.");
+                    }
+                  })
+                  .catch((err) => {
+                    console.error(
+                      "Token retrieval failed:",
+                      err.code,
+                      err.message
+                    );
+                  });
+              });
+          } else {
+            console.log("Permission denied.");
+          }
+        });
+      };
     </script>
 
+    <script src="send.js"></script>
   </body>
 </html>
