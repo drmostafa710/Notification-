@@ -35,14 +35,14 @@
               type: "module",
             })
             .then((register) => {
-             const savedToken = localStorage.getItem('fcm_token');
-              if (savedToken) {
-                window.parent.postMessage({
-                    type: 'TOKEN',
-                    token: savedToken
-                  }, '*');
-                return;
-              }
+             // const savedToken = localStorage.getItem('fcm_token');
+             //  if (savedToken) {
+             //    window.parent.postMessage({
+             //        type: 'TOKEN',
+             //        token: savedToken
+             //      }, '*');
+             //    return;
+             //  }
               getToken(messaging, {
                 serviceWorkerRegistration: register,
                 vapidKey:
@@ -50,7 +50,7 @@
               })
                 .then(async (currentToken) => {
                   if (currentToken) {
-                    localStorage.setItem('fcm_token', currentToken);
+                    // localStorage.setItem('fcm_token', currentToken);
                     window.parent.postMessage({
                       type: 'TOKEN',
                       token: currentToken
