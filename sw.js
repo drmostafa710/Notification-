@@ -63,12 +63,11 @@ onBackgroundMessage(messaging, (payload) => {
   
   const notificationTitle = payload.notification?.title || "Default Title";
   const notificationOptions = {
-    body: payload.notification?.body || "Default Body",
-    icon: payload.notification?.image || "/default-icon.png",
+    body: payload.notification?.body ,
+    icon: payload.notification?.image ,
     data: {
       url: payload.fcmOptions.link,
-    },
-    tag: "fcm-background",
+    }
   };
 
   self.addEventListener("notificationclick", (event) => {
