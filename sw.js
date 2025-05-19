@@ -1,5 +1,6 @@
 self.addEventListener("push", function(event) {
   const payload = event.data.json();
+  const url = payload.fcmOptions?.link;
 
   console.log("[firebase-messaging-sw.js] Received push message:", payload.fcmOptions?.link);
 
@@ -8,7 +9,7 @@ self.addEventListener("push", function(event) {
     body: payload.notification?.body,
     icon: payload.notification?.image,
     data: {
-      url: payload.fcmOptions?.link || "https://quiz-app.infinityfreeapp.com/",
+      url: url || "https://quiz-app.infinityfreeapp.com/",
     },
   };
 
@@ -17,7 +18,6 @@ self.addEventListener("push", function(event) {
   );
 
   self.addEventListener("notificationclick", function(event) {
-    const url = payload.fcmOptions?.link;
 
     event.waitUntil(clients.openWindow(url));
     
