@@ -46,7 +46,7 @@ const messaging = getMessaging(app);
                 tokenElement.textContent = currentToken;
                 document.querySelector(".token").appendChild(tokenElement);
 
-                fetch('http://localhost:8000/', {
+                fetch('http://localhost:8000/index.php?page=home', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
