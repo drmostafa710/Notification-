@@ -1,52 +1,41 @@
-// Firebase Messaging Service Worker
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+self.addEventListener("push", function(event) {
+  const payload = event.data.json();
+  const url = payload.fcmOptions?.link;
 
-import {
-  getMessaging,
-  onBackgroundMessage,
-} from "https://www.gstatic.com/firebasejs/11.7.1/firebase-messaging-sw.js";
+  console.log("[firebase-messaging-sw.js] Received push message:", payload);
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBqzGlq5Qukfk1WKzRCl9L8ndH2FnAct7k",
-  authDomain: "qzapp-3db60.firebaseapp.com",
-  projectId: "qzapp-3db60",
-  storageBucket: "qzapp-3db60.appspot.com",
-  messagingSenderId: "512223543409",
-  appId: "1:512223543409:web:8167a582ef6f5a37661bd0",
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
-
-// // Background message handler (via FCM when app is in background)
-onBackgroundMessage(messaging, (payload) => {
-  console.log(
-    "[firebase-messaging-sw.js] Received background message:",
-    payload.fcmOptions.link
-  );
-
-  const notificationTitle = payload.notification?.title || "New Quiz Launched";
+  const notificationTitle = payload.notification?.title || "New Notification";
   const notificationOptions = {
-    body: payload.notification?.body || "Click To Open",
+    body: payload.notification?.body,
     icon: payload.notification?.image || "/default-icon.png",
     data: {
-      url: payload.fcmOptions.link,
+      url: url || "https://quiz-app.infinityfreeapp.com/",
     },
-    tag: "fcm-background",
   };
 
-  self.addEventListener("notificationclick", (event) => {
-    const urlToOpen = payload.fcmOptions.link;
+  event.waitUntil(
+    self.registration.showNotification(notificationTitle, notificationOptions)
+  );
+});
 
-    event.waitUntil(clients.openWindow(urlToOpen));
+// ✅ Must be outside the push event
+self.addEventListener("notificationclick", function(event) {
+  const urlToOpen = event.notification.data?.url || "https://quiz-app.infinityfreeapp.com/";
 
-    event.notification.close();
-  });
+  event.notification.close();
 
-  return self.registration.showNotification(
-    notificationTitle,
-    notificationOptions
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+      // Try to focus an open tab with the same URL
+      for (const client of clientList) {
+        if (client.url === urlToOpen && "focus" in client) {
+          return client.focus();
+        }
+      }
+      // If not open, open a new tab
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen);
+      }
+    })
   );
 });
