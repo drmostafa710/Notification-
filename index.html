@@ -31,7 +31,7 @@
       Notification.requestPermission().then((permission) => {
         if (permission === "granted") {
           navigator.serviceWorker
-            .register("/Notification-/sw-v1.js", {
+            .register("/Notification-/sw-v2.js", {
               type: "module",
             })
             .then((register) => {
