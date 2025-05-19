@@ -46,7 +46,7 @@ const messaging = getMessaging(app);
                 tokenElement.textContent = currentToken;
                 document.querySelector(".token").appendChild(tokenElement);
 
-                fetch('https://quizapp.infinityfreeapp.com', {
+                fetch('https://quizapp.infinityfreeapp.com/', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
