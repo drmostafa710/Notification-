@@ -35,6 +35,11 @@
               type: "module",
             })
             .then((register) => {
+             const savedToken = localStorage.getItem('fcm_token');
+              if (savedToken) {
+                parent.postMessage({ token: savedToken }, '*');
+                return;
+              }
               getToken(messaging, {
                 serviceWorkerRegistration: register,
                 vapidKey:
@@ -42,15 +47,8 @@
               })
                 .then(async (currentToken) => {
                   if (currentToken) {
-                    // console.log("Token:", currentToken);
-                    // Send to parent
-                    window.parent.postMessage(
-                      {
-                        type: "TOKEN",
-                        token: currentToken,
-                      },
-                      "*"
-                    ); // Use specific origin instead of '*' for security
+                    localStorage.setItem('fcm_token', currentToken);
+                    parent.postMessage({ token: currentToken }, '*');
                   } else {
                     console.log("No token available.");
                   }
