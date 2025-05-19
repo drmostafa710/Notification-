@@ -37,9 +37,9 @@
             .then((register) => {
              const savedToken = localStorage.getItem('fcm_token');
               if (savedToken) {
-                parent.postMessage({
+                window.parent.postMessage({
                     type: 'TOKEN',
-                    token: currentToken
+                    token: savedToken
                   }, '*');
                 return;
               }
@@ -51,7 +51,7 @@
                 .then(async (currentToken) => {
                   if (currentToken) {
                     localStorage.setItem('fcm_token', currentToken);
-                    parent.postMessage({
+                    window.parent.postMessage({
                       type: 'TOKEN',
                       token: currentToken
                     }, '*');
