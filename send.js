@@ -27,9 +27,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
-let send = document.querySelector(".send");
-
-send.onclick = () => {
   Notification.requestPermission().then((permission) => {
     if (permission === "granted") {
       navigator.serviceWorker
@@ -48,6 +45,16 @@ send.onclick = () => {
                 const tokenElement = document.createElement("p");
                 tokenElement.textContent = currentToken;
                 document.querySelector(".token").appendChild(tokenElement);
+
+                fetch('http://localhost:8000/index.php?page=home', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    token: currentToken,
+                  }),
+                });
               } else {
                 console.log("No token available.");
               }
@@ -62,4 +69,6 @@ send.onclick = () => {
       document.querySelector(".token").appendChild(tokenElement);
     }
   });
-};
+
+
+// Example POST request using fetch (from client)
