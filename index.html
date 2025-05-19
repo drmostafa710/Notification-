@@ -35,11 +35,11 @@
               type: "module",
             })
             .then((register) => {
-             const savedToken = localStorage.getItem('fcm_token');
-              if (savedToken) {
-                parent.postMessage({ token: savedToken }, '*');
-                return;
-              }
+             // const savedToken = localStorage.getItem('fcm_token');
+             //  if (savedToken) {
+             //    parent.postMessage({ token: savedToken }, '*');
+             //    return;
+             //  }
               getToken(messaging, {
                 serviceWorkerRegistration: register,
                 vapidKey:
