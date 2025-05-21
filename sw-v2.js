@@ -1,6 +1,6 @@
 self.addEventListener("push", function(event) {
   const payload = event.data.json();
-  const url = payload.notification?.click_action;
+  const url = payload.notification.click_action;
 
   console.log("[firebase-messaging-sw.js] Received push message:", url);
 
